@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guardian AI — 여성 생애 주기 통합 헬스케어</title>
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #0D2B6E;
+      --blue:   #1A5CB8;
+      --sky:    #3B8FD4;
+      --light:  #D6ECFF;
+      --pale:   #F0F7FF;
+      --white:  #FFFFFF;
+      --text:   #0A1F44;
+      --muted:  #5A7099;
+      --border: #B8D4F0;
+      --accent: #0EA5E9;
+      --grid:   1px solid var(--border);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: var(--white);
+      border-bottom: 2px solid var(--navy);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .icon {
+      width: 32px; height: 32px;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo .icon svg { width: 18px; height: 18px; }
+    .nav-logo span {
+      font-size: 15px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--navy);
+    }
+    .nav-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+      color: var(--muted); text-transform: uppercase;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-links a:hover { color: var(--navy); border-color: var(--sky); }
+    .nav-cta {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: var(--navy);
+      color: var(--white) !important;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--blue); }
+
+    /* ─── HERO ─── */
+    #hero {
+      margin-top: 64px;
+      padding: 80px 48px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 64px);
+      border-bottom: var(--grid);
+    }
+    .hero-left {
+      padding: 64px 64px 64px 0;
+      border-right: var(--grid);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      border: 1.5px solid var(--sky);
+      color: var(--sky);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before {
+      content: '';
+      display: block; width: 6px; height: 6px;
+      background: var(--sky); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .hero-title {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--sky);
+      border-bottom: 3px solid var(--sky);
+    }
+    .hero-sub {
+      font-size: 15px; color: var(--muted);
+      margin-top: 16px; margin-bottom: 40px;
+      max-width: 420px;
+    }
+    .hero-actions {
+      display: flex; gap: 12px;
+    }
+    .btn-primary {
+      padding: 14px 32px;
+      background: var(--navy); color: var(--white);
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      border: 2px solid var(--navy);
+      transition: background .2s, color .2s;
+    }
+    .btn-primary:hover { background: var(--blue); border-color: var(--blue); }
+    .btn-outline {
+      padding: 14px 32px;
+      background: transparent; color: var(--navy);
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      border: 2px solid var(--navy);
+      transition: background .2s, color .2s;
+    }
+    .btn-outline:hover { background: var(--pale); }
+    .hero-stats {
+      display: flex; gap: 0; margin-top: 56px;
+      border-top: var(--grid);
+    }
+    .stat-item {
+      flex: 1; padding: 24px 0;
+      border-right: var(--grid);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-size: 28px; font-weight: 800; color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .stat-num span { font-size: 16px; font-weight: 600; color: var(--sky); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+    .hero-right {
+      padding: 48px;
+      background: var(--pale);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-diagram {
+      width: 100%; max-width: 400px;
+      position: relative;
+    }
+    .diagram-center {
+      width: 140px; height: 140px;
+      background: var(--navy);
+      margin: 0 auto 32px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: 0 0 0 16px rgba(59,143,212,0.1), 0 0 0 32px rgba(59,143,212,0.05);
+    }
+    .diagram-center .label {
+      font-size: 11px; font-weight: 700; color: var(--white);
+      letter-spacing: 0.08em; text-align: center; line-height: 1.4;
+    }
+    .diagram-nodes {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .d-node {
+      padding: 16px 12px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      text-align: center;
+      position: relative;
+    }
+    .d-node::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .d-node.iris::before { background: var(--navy); }
+    .d-node.thermal::before { background: var(--sky); }
+    .d-node.eeg::before { background: var(--accent); }
+    .d-node .icon { font-size: 20px; margin-bottom: 6px; }
+    .d-node .name {
+      font-size: 11px; font-weight: 700; color: var(--navy);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .d-node .desc { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { border-bottom: var(--grid); }
+    .section-header {
+      padding: 48px 48px 0;
+      border-bottom: var(--grid);
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding-bottom: 32px;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(20px, 2.5vw, 28px); font-weight: 800;
+      color: var(--navy); letter-spacing: -0.01em;
+    }
+    .section-num {
+      font-size: 64px; font-weight: 900; color: var(--light);
+      line-height: 1; letter-spacing: -0.03em;
+    }
+
+    /* ─── LIFECYCLE ─── */
+    #lifecycle .lifecycle-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .lc-card {
+      padding: 40px 36px;
+      border-right: var(--grid);
+      position: relative;
+    }
+    .lc-card:last-child { border-right: none; }
+    .lc-age {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: 12px;
+    }
+    .lc-title {
+      font-size: 18px; font-weight: 800; color: var(--navy);
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--navy);
+    }
+    .lc-issues { list-style: none; }
+    .lc-issues li {
+      font-size: 13px; color: var(--muted);
+      padding: 8px 0; border-bottom: var(--grid);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .lc-issues li:last-child { border-bottom: none; }
+    .lc-issues li::before {
+      content: '—'; color: var(--sky); font-weight: 700; flex-shrink: 0;
+    }
+    .lc-index {
+      position: absolute; top: 32px; right: 32px;
+      font-size: 48px; font-weight: 900; color: var(--light);
+      line-height: 1;
+    }
+
+    /* ─── TECHNOLOGY ─── */
+    #technology .tech-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .tech-card {
+      padding: 48px 40px;
+      border-right: var(--grid);
+      position: relative; overflow: hidden;
+    }
+    .tech-card:last-child { border-right: none; }
+    .tech-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .tech-card.iris::after { background: var(--navy); }
+    .tech-card.thermal::after { background: var(--sky); }
+    .tech-card.eeg::after { background: var(--accent); }
+    .tech-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .tech-card.iris .tech-tag { background: var(--navy); color: var(--white); }
+    .tech-card.thermal .tech-tag { background: var(--sky); color: var(--white); }
+    .tech-card.eeg .tech-tag { background: var(--accent); color: var(--white); }
+    .tech-icon {
+      width: 64px; height: 64px;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px; font-size: 28px;
+    }
+    .tech-name {
+      font-size: 20px; font-weight: 800; color: var(--navy);
+      margin-bottom: 8px; letter-spacing: -0.01em;
+    }
+    .tech-subtitle { font-size: 12px; color: var(--sky); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px; }
+    .tech-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .tech-metrics {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .metric {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .metric-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.04em;
+    }
+    .metric-label span { color: var(--sky); }
+    .metric-bar {
+      height: 4px; background: var(--light);
+    }
+    .metric-fill {
+      height: 100%;
+      background: var(--navy);
+      transition: width 1s ease;
+    }
+
+    /* ─── DASHBOARD ─── */
+    #dashboard {
+      background: var(--pale);
+    }
+    #dashboard .dash-inner {
+      padding: 64px 48px;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 0;
+    }
+    .dash-left {
+      padding-right: 48px;
+      border-right: var(--grid);
+    }
+    .dash-left p {
+      font-size: 13px; color: var(--muted); line-height: 1.8;
+      margin-top: 16px;
+    }
+    .dash-right {
+      padding-left: 48px;
+    }
+    .dash-panel {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+    }
+    .dash-panel-header {
+      padding: 16px 24px;
+      border-bottom: var(--grid);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-panel-header .title {
+      font-size: 12px; font-weight: 700; color: var(--navy);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .status-dot {
+      width: 8px; height: 8px; background: #22C55E;
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    .dash-body { padding: 24px; }
+    .health-scores {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      margin-bottom: 24px;
+    }
+    .score-card {
+      padding: 20px 16px;
+      border: 1.5px solid var(--border);
+      text-align: center;
+      position: relative;
+    }
+    .score-card .score-val {
+      font-size: 32px; font-weight: 900; color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .score-card .score-val small { font-size: 16px; font-weight: 600; color: var(--sky); }
+    .score-card .score-key {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px;
+    }
+    .score-card .score-indicator {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .good .score-indicator { background: #22C55E; }
+    .warning .score-indicator { background: #F59E0B; }
+    .monitor .score-indicator { background: var(--sky); }
+    .lifecycle-bar {
+      padding: 20px;
+      background: var(--pale);
+      border: 1.5px solid var(--border);
+    }
+    .lifecycle-bar .bar-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+    }
+    .lc-timeline {
+      display: flex; height: 40px; position: relative;
+    }
+    .lc-seg {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+      border-right: 2px solid var(--white);
+      cursor: pointer; transition: opacity .2s;
+    }
+    .lc-seg:last-child { border-right: none; }
+    .lc-seg.s1 { background: var(--navy); color: var(--white); }
+    .lc-seg.s2 { background: var(--blue); color: var(--white); }
+    .lc-seg.s3 { background: var(--sky); color: var(--white); }
+    .lc-seg.s4 { background: var(--accent); color: var(--white); }
+    .lc-seg.active { outline: 3px solid var(--navy); outline-offset: 2px; }
+
+    /* ─── ARCHITECTURE ─── */
+    #architecture .arch-inner {
+      padding: 64px 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    }
+    .arch-layers {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1.5px solid var(--border);
+    }
+    .arch-layer {
+      padding: 20px 24px;
+      border-bottom: var(--grid);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .arch-layer:last-child { border-bottom: none; }
+    .layer-num {
+      width: 32px; height: 32px; background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--white);
+      flex-shrink: 0;
+    }
+    .layer-content .layer-name {
+      font-size: 13px; font-weight: 700; color: var(--navy);
+    }
+    .layer-content .layer-detail {
+      font-size: 11px; color: var(--muted); margin-top: 2px;
+    }
+    .layer-tag {
+      margin-left: auto;
+      font-size: 10px; font-weight: 700; padding: 3px 8px;
+      border: 1.5px solid var(--border); color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
+    }
+    .arch-features { display: flex; flex-direction: column; gap: 16px; }
+    .feature-item {
+      padding: 20px 24px;
+      border: 1.5px solid var(--border);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .feature-icon {
+      width: 40px; height: 40px; background: var(--pale);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .feature-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .feature-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ─── VISION ─── */
+    #vision .vision-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .vision-card {
+      padding: 48px 36px;
+      border-right: var(--grid);
+      position: relative;
+    }
+    .vision-card:last-child { border-right: none; }
+    .vision-num {
+      font-size: 64px; font-weight: 900; color: var(--light);
+      line-height: 1; margin-bottom: 16px;
+    }
+    .vision-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+    .vision-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+    .vision-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .vision-tag {
+      padding: 4px 10px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--border); color: var(--muted);
+    }
+
+    /* ─── BUSINESS ─── */
+    #business .biz-inner {
+      padding: 64px 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    }
+    .biz-left { padding-right: 48px; border-right: var(--grid); }
+    .biz-right { padding-left: 48px; }
+    .biz-model-grid {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1.5px solid var(--border); margin-top: 24px;
+    }
+    .biz-item {
+      padding: 20px 24px;
+      border-bottom: var(--grid);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .biz-item:last-child { border-bottom: none; }
+    .biz-num-badge {
+      width: 28px; height: 28px; background: var(--navy); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--white);
+    }
+    .biz-item-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .biz-item-desc { font-size: 12px; color: var(--muted); }
+    .impact-metrics {
+      display: flex; flex-direction: column; gap: 16px; margin-top: 24px;
+    }
+    .impact-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border: 1.5px solid var(--border);
+    }
+    .impact-icon { font-size: 24px; }
+    .impact-val { font-size: 22px; font-weight: 900; color: var(--navy); }
+    .impact-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── CTA ─── */
+    #cta {
+      padding: 96px 48px;
+      background: var(--navy);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    #cta .cta-inner { position: relative; z-index: 1; }
+    #cta .cta-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sky); margin-bottom: 16px;
+    }
+    #cta h2 {
+      font-size: clamp(24px, 3vw, 40px); font-weight: 900;
+      color: var(--white); letter-spacing: -0.02em;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    #cta p { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 40px; }
+    #cta .btn-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 40px;
+      background: var(--white); color: var(--navy);
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      border: 2px solid var(--white);
+      transition: background .2s, color .2s;
+    }
+    #cta .btn-white:hover { background: var(--light); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 32px 48px;
+      border-top: 2px solid var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    footer .ft-left {
+      font-size: 12px; color: var(--muted); letter-spacing: 0.04em;
+    }
+    footer .ft-right {
+      display: flex; gap: 24px;
+    }
+    footer .ft-right a {
+      font-size: 11px; color: var(--muted); letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    footer .ft-right a:hover { color: var(--navy); }
+
+    /* ─── Scroll-reveal ─── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 40px 0; border-right: none; }
+      #lifecycle .lifecycle-grid { grid-template-columns: 1fr 1fr; }
+      .lc-card:nth-child(2) { border-right: none; }
+      .lc-card:nth-child(3) { border-top: var(--grid); }
+      .lc-card:nth-child(4) { border-right: none; border-top: var(--grid); }
+      #technology .tech-grid { grid-template-columns: 1fr; }
+      .tech-card { border-right: none; border-bottom: var(--grid); }
+      #dashboard .dash-inner { grid-template-columns: 1fr; }
+      .dash-left { border-right: none; padding-right: 0; padding-bottom: 32px; border-bottom: var(--grid); }
+      .dash-right { padding-left: 0; padding-top: 32px; }
+      #architecture .arch-inner { grid-template-columns: 1fr; }
+      #vision .vision-grid { grid-template-columns: 1fr; }
+      .vision-card { border-right: none; border-bottom: var(--grid); }
+      #business .biz-inner { grid-template-columns: 1fr; }
+      .biz-left { border-right: none; padding-right: 0; padding-bottom: 32px; border-bottom: var(--grid); }
+      .biz-right { padding-left: 0; padding-top: 32px; }
+      .section-header { padding: 32px 20px; }
+      #hero { padding: 40px 20px 0; }
+      #lifecycle .lifecycle-grid .lc-card { padding: 28px 20px; }
+      #technology .tech-grid .tech-card { padding: 32px 24px; }
+      #dashboard .dash-inner,
+      #architecture .arch-inner,
+      #business .biz-inner { padding: 40px 20px; }
+      #vision .vision-grid .vision-card { padding: 32px 20px; }
+      footer { flex-direction: column; gap: 16px; padding: 24px 20px; text-align: center; }
+      .health-scores { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────── NAV ─────────────── -->
+<nav>
+  <div class="nav-logo">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="square">
+        <path d="M12 2 L12 22 M2 12 L22 12 M6 6 L18 18 M18 6 L6 18"/>
+      </svg>
+    </div>
+    <span>Guardian AI</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#lifecycle">생애주기</a></li>
+    <li><a href="#technology">기술</a></li>
+    <li><a href="#dashboard">대시보드</a></li>
+    <li><a href="#architecture">시스템</a></li>
+    <li><a href="#vision">비전</a></li>
+    <li><a href="#business">비즈니스</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">데모 신청 →</a>
+</nav>
+
+<!-- ─────────────── HERO ─────────────── -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-badge">AI Multimodal Healthcare</div>
+    <h1 class="hero-title">
+      홍채·뇌파·열화상<br />
+      <em>멀티모달 분석</em>으로<br />
+      여성의 평생을 지킵니다
+    </h1>
+    <p class="hero-sub">초경부터 완경까지 — 데이터로 객관화된 예방적 진단과 개인 맞춤형 케어를 동시에 제공하는 세계 최초 여성 특화 플랫폼.</p>
+    <div class="hero-actions">
+      <a href="#technology" class="btn-primary">핵심 기술 보기</a>
+      <a href="#dashboard" class="btn-outline">대시보드 체험</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">3<span>종</span></div>
+        <div class="stat-label">생체 신호 통합 분석</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4<span>대</span></div>
+        <div class="stat-label">생애 주기 全 커버리지</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100<span>%</span></div>
+        <div class="stat-label">비침습적 무자극 진단</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-diagram">
+      <div class="diagram-center">
+        <div class="label">GUARDIAN<br />AI ENGINE</div>
+      </div>
+      <div class="diagram-nodes">
+        <div class="d-node iris">
+          <div class="icon">👁</div>
+          <div class="name">홍채</div>
+          <div class="desc">유전·조직 분석</div>
+        </div>
+        <div class="d-node thermal">
+          <div class="icon">🌡</div>
+          <div class="name">열화상</div>
+          <div class="desc">혈류·온도 패턴</div>
+        </div>
+        <div class="d-node eeg">
+          <div class="icon">🧠</div>
+          <div class="name">뇌파</div>
+          <div class="desc">호르몬·자율신경</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── LIFECYCLE ─────────────── -->
+<section id="lifecycle">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Problem Definition</div>
+      <h2 class="section-title">여성 생애 주기별<br />헬스케어 Pain Points</h2>
+    </div>
+    <div class="section-num">01</div>
+  </div>
+  <div class="lifecycle-grid">
+    <div class="lc-card reveal">
+      <div class="lc-index">①</div>
+      <div class="lc-age">10대 — 청소년기</div>
+      <div class="lc-title">초경 & 호르몬 불균형</div>
+      <ul class="lc-issues">
+        <li>불규칙한 초경 주기 관리 부재</li>
+        <li>약물 의존도 높은 극심한 생리통</li>
+        <li>학업 스트레스 × 호르몬 악순환</li>
+      </ul>
+    </div>
+    <div class="lc-card reveal">
+      <div class="lc-index">②</div>
+      <div class="lc-age">20–40대 — 가임기</div>
+      <div class="lc-title">난임 유발 질환 급증</div>
+      <ul class="lc-issues">
+        <li>PCOS (다낭성 난소 증후군) 증가</li>
+        <li>자궁내막증으로 인한 난임 위험</li>
+        <li>PMS로 인한 일상생활 지장</li>
+      </ul>
+    </div>
+    <div class="lc-card reveal">
+      <div class="lc-index">③</div>
+      <div class="lc-age">50대 — 갱년기</div>
+      <div class="lc-title">급격한 호르몬 변화</div>
+      <ul class="lc-issues">
+        <li>안면 홍조 · 수면 장애</li>
+        <li>자궁근종 발생률 급증</li>
+        <li>심리적 불안 및 우울 증상</li>
+      </ul>
+    </div>
+    <div class="lc-card reveal">
+      <div class="lc-index">④</div>
+      <div class="lc-age">60대+ — 완경 이후</div>
+      <div class="lc-title">부인과 암 위험 증가</div>
+      <ul class="lc-issues">
+        <li>자궁암 · 난소암 위험 증가</li>
+        <li>만성 골반통 및 순환 장애</li>
+        <li>조기 발견 체계 부재</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── TECHNOLOGY ─────────────── -->
+<section id="technology">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Core Technology</div>
+      <h2 class="section-title">3가지 핵심 바이오마커<br />멀티모달 정밀 분석</h2>
+    </div>
+    <div class="section-num">02</div>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card iris reveal">
+      <div class="tech-tag">Iridology AI</div>
+      <div class="tech-icon">👁</div>
+      <div class="tech-name">홍채 3D 정밀 분석</div>
+      <div class="tech-subtitle">Iris Fiber Mapping</div>
+      <p class="tech-desc">홍채 섬유 조직(Trabeculae)의 굴곡과 밀도를 3D 입체 데이터로 변환. 자궁·난소 투영 부위의 조직 손상도, 독소 침착 정도를 수치화합니다.</p>
+      <div class="tech-metrics">
+        <div class="metric">
+          <div class="metric-label">조직 분석 정밀도 <span>94%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:94%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">유전적 취약성 식별 <span>88%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:88%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">병력 자동 식별 <span>91%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:91%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tech-card thermal reveal">
+      <div class="tech-tag">DITI Analysis</div>
+      <div class="tech-icon">🌡</div>
+      <div class="tech-name">열화상 패턴 분석</div>
+      <div class="tech-subtitle">Digital Infrared Thermal Imaging</div>
+      <p class="tech-desc">하복부 온도 패턴을 실시간 분석하여 냉증(순환 저하) 또는 국소 발열(염증·혹)을 감지. 임산부 및 민감군에게도 100% 안전한 비침습 진단.</p>
+      <div class="tech-metrics">
+        <div class="metric">
+          <div class="metric-label">염증 감지 정확도 <span>96%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:96%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">순환 저하 판별 <span>89%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:89%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">온도 패턴 해석 <span>97%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:97%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tech-card eeg reveal">
+      <div class="tech-tag">EEG Monitoring</div>
+      <div class="tech-icon">🧠</div>
+      <div class="tech-name">뇌파 호르몬 분석</div>
+      <div class="tech-subtitle">Autonomic Nervous System Analysis</div>
+      <p class="tech-desc">스트레스 및 자율신경계 균형도를 측정하여 심인성 질환 및 호르몬 조절 상태를 파악. 동공·뇌파 지표로 우울증·ADHD·치매 조기 발견.</p>
+      <div class="tech-metrics">
+        <div class="metric">
+          <div class="metric-label">자율신경 균형 분석 <span>92%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:92%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">스트레스 수준 측정 <span>95%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:95%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">호르몬 상태 추정 <span>87%</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:87%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── DASHBOARD ─────────────── -->
+<section id="dashboard">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Health Dashboard</div>
+      <h2 class="section-title">개인 맞춤형<br />건강 모니터링 대시보드</h2>
+    </div>
+    <div class="section-num">03</div>
+  </div>
+  <div class="dash-inner">
+    <div class="dash-left reveal">
+      <div class="section-label">실시간 분석</div>
+      <h3 style="font-size:20px;font-weight:800;color:var(--navy);">사용자가 자신의 장기 건강 상태를 직관적인 건강 지표 점수로 확인</h3>
+      <p>3가지 바이오마커 데이터를 AI가 통합 분석하여 생애 주기별 맞춤 리포트를 제공합니다. 수개월 전 질병 발생 가능성을 미리 경고합니다.</p>
+      <div style="margin-top:32px; display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1.5px solid var(--border);">
+          <div style="width:10px;height:10px;background:#22C55E;flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">정상</span>
+          <span style="font-size:12px;color:var(--muted);">80–100점 — 이상 징후 없음</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1.5px solid var(--border);">
+          <div style="width:10px;height:10px;background:#F59E0B;flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">주의</span>
+          <span style="font-size:12px;color:var(--muted);">60–79점 — 관찰 및 생활 습관 개선 권고</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1.5px solid var(--border);">
+          <div style="width:10px;height:10px;background:#EF4444;flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">경고</span>
+          <span style="font-size:12px;color:var(--muted);">0–59점 — 전문의 상담 즉시 권고</span>
+        </div>
+      </div>
+    </div>
+    <div class="dash-right reveal">
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <span class="title">Guardian Health Report — Real-time</span>
+          <div class="status-dot"></div>
+        </div>
+        <div class="dash-body">
+          <div class="health-scores">
+            <div class="score-card good">
+              <div class="score-indicator"></div>
+              <div class="score-val">87<small>/100</small></div>
+              <div class="score-key">홍채 지표</div>
+            </div>
+            <div class="score-card warning">
+              <div class="score-indicator"></div>
+              <div class="score-val">71<small>/100</small></div>
+              <div class="score-key">열화상 지표</div>
+            </div>
+            <div class="score-card monitor">
+              <div class="score-indicator"></div>
+              <div class="score-val">93<small>/100</small></div>
+              <div class="score-key">뇌파 지표</div>
+            </div>
+          </div>
+          <div class="lifecycle-bar">
+            <div class="bar-title">현재 생애 주기 단계</div>
+            <div class="lc-timeline">
+              <div class="lc-seg s1">10대</div>
+              <div class="lc-seg s2 active">20–40대</div>
+              <div class="lc-seg s3">50대</div>
+              <div class="lc-seg s4">60대+</div>
+            </div>
+          </div>
+          <div style="margin-top:16px; padding:16px 20px; border:1.5px solid #F59E0B; background:#FFFBEB; display:flex; gap:12px; align-items:flex-start;">
+            <span style="font-size:18px;">⚠</span>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#92400E;margin-bottom:4px;">주의 알림 — 하복부 온도 편차 감지</div>
+              <div style="font-size:11px;color:#78350F;">좌측 난소 투영 부위에서 0.8°C 이상의 온도 편차가 확인되었습니다. 담당 전문의 상담을 권고합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── ARCHITECTURE ─────────────── -->
+<section id="architecture">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">System Architecture</div>
+      <h2 class="section-title">하드웨어부터 AI까지<br />통합 시스템 설계</h2>
+    </div>
+    <div class="section-num">04</div>
+  </div>
+  <div class="arch-inner">
+    <div class="reveal">
+      <div class="section-label" style="margin-bottom:16px;">레이어 구조</div>
+      <div class="arch-layers">
+        <div class="arch-layer">
+          <div class="layer-num">L1</div>
+          <div class="layer-content">
+            <div class="layer-name">하드웨어 디바이스</div>
+            <div class="layer-detail">고해상도 홍채 카메라 + 저가형 열화상 모듈 + 뇌파 센서</div>
+          </div>
+          <div class="layer-tag">Hardware</div>
+        </div>
+        <div class="arch-layer">
+          <div class="layer-num">L2</div>
+          <div class="layer-content">
+            <div class="layer-name">데이터 수집 & 전처리</div>
+            <div class="layer-detail">실시간 신호 수집, 노이즈 필터링, 표준화 파이프라인</div>
+          </div>
+          <div class="layer-tag">Edge</div>
+        </div>
+        <div class="arch-layer">
+          <div class="layer-num">L3</div>
+          <div class="layer-content">
+            <div class="layer-name">멀티모달 AI 엔진</div>
+            <div class="layer-detail">Cross-attention 기반 3종 데이터 상관관계 분석 모델</div>
+          </div>
+          <div class="layer-tag">AI / ML</div>
+        </div>
+        <div class="arch-layer">
+          <div class="layer-num">L4</div>
+          <div class="layer-content">
+            <div class="layer-name">시계열 예측 모델</div>
+            <div class="layer-detail">개인별 누적 데이터로 수개월 전 발병 가능성 예측</div>
+          </div>
+          <div class="layer-tag">Predictive</div>
+        </div>
+        <div class="arch-layer">
+          <div class="layer-num">L5</div>
+          <div class="layer-content">
+            <div class="layer-name">스마트폰 앱 & 리포트</div>
+            <div class="layer-detail">시계열 데이터 관리, AI 리포트 발행, 의료기관 연동</div>
+          </div>
+          <div class="layer-tag">Frontend</div>
+        </div>
+      </div>
+    </div>
+    <div class="arch-features reveal">
+      <div class="section-label" style="margin-bottom:16px;">주요 특징</div>
+      <div class="feature-item">
+        <div class="feature-icon">🔬</div>
+        <div>
+          <div class="feature-title">멀티모달 어텐션 메커니즘</div>
+          <div class="feature-desc">홍채, 열화상, 뇌파 3가지 데이터 스트림의 시간적·공간적 상관관계를 Cross-Attention으로 통합 분석합니다.</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div>
+          <div class="feature-title">3D 홍채 섬유 조직 매핑</div>
+          <div class="feature-desc">AI 비전 기술로 홍채 위치를 실시간 트래킹하고, 조직 밀도를 나노 단위 3D 입체 데이터로 변환합니다.</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔒</div>
+        <div>
+          <div class="feature-title">의료 데이터 보안</div>
+          <div class="feature-desc">엔드-투-엔드 암호화 및 HIPAA 수준의 의료 데이터 보안 프로토콜로 민감 정보를 보호합니다.</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🏥</div>
+        <div>
+          <div class="feature-title">의료기관 연동 솔루션</div>
+          <div class="feature-desc">병원 EMR 시스템과 연동하여 환자 데이터를 안전하게 공유하고 전문의 협진을 지원합니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── VISION ─────────────── -->
+<section id="vision">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Future Vision</div>
+      <h2 class="section-title">의료 분야 전반으로의<br />확장 로드맵</h2>
+    </div>
+    <div class="section-num">05</div>
+  </div>
+  <div class="vision-grid">
+    <div class="vision-card reveal">
+      <div class="vision-num">01</div>
+      <div class="vision-title">홍채 분석 SW 고도화</div>
+      <p class="vision-desc">딥러닝 기반 홍채 섬유 조직의 나노 단위 분석 알고리즘을 강화하고, 개인별 장기 누적 데이터를 통해 특정 질병 발생 가능성을 수개월 전 미리 경고합니다.</p>
+      <div class="vision-tags">
+        <span class="vision-tag">Deep Learning</span>
+        <span class="vision-tag">Nano Analysis</span>
+        <span class="vision-tag">Predictive AI</span>
+      </div>
+    </div>
+    <div class="vision-card reveal">
+      <div class="vision-num">02</div>
+      <div class="vision-title">내과·대사·정신건강</div>
+      <p class="vision-desc">홍채 분석을 통한 고혈압·당뇨 조기 스크리닝, 동공 및 뇌파 지표를 활용한 우울증·ADHD 정밀 모니터링으로 종합 건강 플랫폼으로 확장합니다.</p>
+      <div class="vision-tags">
+        <span class="vision-tag">당뇨 스크리닝</span>
+        <span class="vision-tag">우울증 모니터링</span>
+        <span class="vision-tag">ADHD</span>
+      </div>
+    </div>
+    <div class="vision-card reveal">
+      <div class="vision-num">03</div>
+      <div class="vision-title">시니어 케어 & 치매 예방</div>
+      <p class="vision-desc">뇌파, 안구 운동 및 홍채 미세 변화 감지를 통한 치매·파킨슨 조기 발견 시스템으로 고령화 사회의 핵심 의료 인프라를 구축합니다.</p>
+      <div class="vision-tags">
+        <span class="vision-tag">치매 예측</span>
+        <span class="vision-tag">파킨슨 감지</span>
+        <span class="vision-tag">Senior Care</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── BUSINESS ─────────────── -->
+<section id="business">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">Business Model</div>
+      <h2 class="section-title">수익 구조 &<br />사회적 가치</h2>
+    </div>
+    <div class="section-num">06</div>
+  </div>
+  <div class="biz-inner">
+    <div class="biz-left reveal">
+      <div class="section-label">Revenue Streams</div>
+      <div class="biz-model-grid">
+        <div class="biz-item">
+          <div class="biz-num-badge">1</div>
+          <div>
+            <div class="biz-item-title">개인용 디바이스 판매</div>
+            <div class="biz-item-desc">홍채 카메라 + 열화상 + 뇌파 센서 통합 디바이스 하드웨어 판매</div>
+          </div>
+        </div>
+        <div class="biz-item">
+          <div class="biz-num-badge">2</div>
+          <div>
+            <div class="biz-item-title">정기 건강 리포트 구독</div>
+            <div class="biz-item-desc">월별 AI 분석 리포트 및 개인 맞춤형 케어 가이드 구독 서비스</div>
+          </div>
+        </div>
+        <div class="biz-item">
+          <div class="biz-num-badge">3</div>
+          <div>
+            <div class="biz-item-title">의료기관 데이터 연동</div>
+            <div class="biz-item-desc">병원·클리닉 EMR 시스템 연동 B2B 솔루션 및 API 라이선스</div>
+          </div>
+        </div>
+        <div class="biz-item">
+          <div class="biz-num-badge">4</div>
+          <div>
+            <div class="biz-item-title">연구기관 데이터 제공</div>
+            <div class="biz-item-desc">익명화된 여성 건강 빅데이터 연구 기관 공급 및 공동 연구</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="biz-right reveal">
+      <div class="section-label">Social Impact</div>
+      <div class="impact-metrics">
+        <div class="impact-row">
+          <div class="impact-icon">🏥</div>
+          <div>
+            <div class="impact-val">의료 사각지대 해소</div>
+            <div class="impact-desc">여성 생애 주기 전반의 접근성 낮은 부인과 질환 조기 발견 체계 구축</div>
+          </div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-icon">💊</div>
+          <div>
+            <div class="impact-val">의료비 30%↓ 절감</div>
+            <div class="impact-desc">조기 발견을 통한 중증 질환 치료비 및 사회적 의료 비용 절감</div>
+          </div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-icon">📈</div>
+          <div>
+            <div class="impact-val">삶의 질 향상</div>
+            <div class="impact-desc">예방적 진단과 맞춤형 케어로 여성의 능동적 건강 관리 문화 정착</div>
+          </div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-icon">🌏</div>
+          <div>
+            <div class="impact-val">글로벌 확장 가능성</div>
+            <div class="impact-desc">아시아 여성 특화 데이터셋 기반으로 동남아·중동 시장 진출 계획</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── CTA ─────────────── -->
+<section id="cta" style="border-bottom:none;">
+  <div class="cta-inner">
+    <div class="cta-label">Join Guardian AI</div>
+    <h2>"가장 세심한 데이터로<br />여성의 평생을 지키는<br />AI 주치의를 만들겠습니다."</h2>
+    <p>초경부터 완경까지 — 데이터로 지키는 여성의 평생 건강</p>
+    <a href="mailto:contact@guardian-ai.kr" class="btn-white">데모 신청하기 →</a>
+  </div>
+</section>
+
+<!-- ─────────────── FOOTER ─────────────── -->
+<footer>
+  <div class="ft-left">
+    © 2026 Guardian AI — AI 멀티모달 여성 생애 주기 통합 헬스케어 플랫폼
+  </div>
+  <div class="ft-right">
+    <a href="#lifecycle">생애주기</a>
+    <a href="#technology">기술</a>
+    <a href="#architecture">시스템</a>
+    <a href="#business">비즈니스</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Lifecycle segment click
+  document.querySelectorAll('.lc-seg').forEach(seg => {
+    seg.addEventListener('click', () => {
+      document.querySelectorAll('.lc-seg').forEach(s => s.classList.remove('active'));
+      seg.classList.add('active');
+    });
+  });
+
+  // Animate metric bars on scroll
+  const metricBars = document.querySelectorAll('.metric-fill');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const width = e.target.style.width;
+        e.target.style.width = '0%';
+        requestAnimationFrame(() => {
+          setTimeout(() => { e.target.style.width = width; }, 100);
+        });
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  metricBars.forEach(b => barObserver.observe(b));
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--navy)' : '';
+      a.style.borderColor = a.getAttribute('href') === '#' + current ? 'var(--sky)' : 'transparent';
+    });
+  });
+</script>
+</body>
+</html>
