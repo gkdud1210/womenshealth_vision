@@ -218,6 +218,33 @@
       opacity: 0.4;
       pointer-events: none;
     }
+    /* ─── HERO MINI VIZ ─── */
+    .d-node { padding: 12px 10px 14px; }
+    .d-mini-viz {
+      width: 100%; aspect-ratio: 1;
+      background: #020d1f;
+      margin-bottom: 10px;
+      position: relative; overflow: hidden;
+    }
+    .d-mini-viz svg { width: 100%; height: 100%; display: block; }
+    @keyframes hmScan {
+      0%   { transform: translateY(0);    opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { transform: translateY(70px); opacity: 0; }
+    }
+    @keyframes hmThermalPulse {
+      0%,100% { opacity: 0.5; }
+      50%     { opacity: 1; }
+    }
+    @keyframes hmEegDot {
+      0%,100% { opacity: 0.3; }
+      50%     { opacity: 1; }
+    }
+    @keyframes hmWave {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-80px); }
+    }
 
     /* ─── SECTION COMMON ─── */
     section { border-bottom: var(--grid); }
@@ -789,19 +816,196 @@
         <div class="label">GUARDIAN<br />AI ENGINE</div>
       </div>
       <div class="diagram-nodes">
+        <!-- IRIS mini viz -->
         <div class="d-node iris">
-          <div class="icon">👁</div>
-          <div class="name">홍채</div>
-          <div class="desc">유전·조직 분석</div>
+          <div class="d-mini-viz">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="hm_i_bg" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#071428"/>
+                  <stop offset="100%" stop-color="#020d1f"/>
+                </radialGradient>
+                <radialGradient id="hm_i_iris" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%"   stop-color="#020d1f"/>
+                  <stop offset="28%"  stop-color="#0a1e40"/>
+                  <stop offset="55%"  stop-color="#183870"/>
+                  <stop offset="80%"  stop-color="#1A5CB8"/>
+                  <stop offset="100%" stop-color="#0D2B6E"/>
+                </radialGradient>
+                <clipPath id="hm_i_clip"><circle cx="40" cy="40" r="34"/></clipPath>
+              </defs>
+              <rect width="80" height="80" fill="url(#hm_i_bg)"/>
+              <!-- iris base -->
+              <circle cx="40" cy="40" r="34" fill="url(#hm_i_iris)" stroke="#1A5CB8" stroke-width="1"/>
+              <!-- iris texture rings -->
+              <circle cx="40" cy="40" r="29" fill="none" stroke="#22d3ee" stroke-width="0.5" opacity="0.5"/>
+              <circle cx="40" cy="40" r="24" fill="none" stroke="#3B8FD4" stroke-width="0.4" opacity="0.6"/>
+              <circle cx="40" cy="40" r="19" fill="none" stroke="#1A5CB8" stroke-width="0.5" opacity="0.7"/>
+              <!-- radial spoke lines -->
+              <line x1="40" y1="6"  x2="40" y2="16" stroke="#22d3ee" stroke-width="0.4" opacity="0.5"/>
+              <line x1="40" y1="64" x2="40" y2="74" stroke="#22d3ee" stroke-width="0.4" opacity="0.5"/>
+              <line x1="6"  y1="40" x2="16" y2="40" stroke="#22d3ee" stroke-width="0.4" opacity="0.5"/>
+              <line x1="64" y1="40" x2="74" y2="40" stroke="#22d3ee" stroke-width="0.4" opacity="0.5"/>
+              <line x1="14" y1="14" x2="21" y2="21" stroke="#22d3ee" stroke-width="0.4" opacity="0.4"/>
+              <line x1="59" y1="14" x2="52" y2="21" stroke="#22d3ee" stroke-width="0.4" opacity="0.4"/>
+              <line x1="14" y1="66" x2="21" y2="59" stroke="#22d3ee" stroke-width="0.4" opacity="0.4"/>
+              <line x1="59" y1="66" x2="52" y2="59" stroke="#22d3ee" stroke-width="0.4" opacity="0.4"/>
+              <!-- pupil -->
+              <circle cx="40" cy="40" r="11" fill="#000"/>
+              <circle cx="36" cy="37" r="2.5" fill="#fff" opacity="0.15"/>
+              <!-- scan line -->
+              <rect x="6" y="0" width="68" height="1.5" fill="rgba(59,143,212,0.85)"
+                clip-path="url(#hm_i_clip)"
+                style="animation: hmScan 2.8s ease-in-out infinite;"/>
+              <!-- corner readout -->
+              <text x="4"  y="9"  font-size="4.5" fill="#3B8FD4" font-family="monospace" opacity="0.8">IRIS</text>
+              <text x="50" y="9"  font-size="4.5" fill="#22d3ee" font-family="monospace" opacity="0.8">SCAN</text>
+              <text x="4"  y="77" font-size="4" fill="#5A7099" font-family="monospace">●REC</text>
+            </svg>
+          </div>
+          <div class="name">홍채 분석</div>
+          <div class="desc">유전·조직 패턴</div>
         </div>
+
+        <!-- THERMAL mini viz -->
         <div class="d-node thermal">
-          <div class="icon">🌡</div>
-          <div class="name">열화상</div>
+          <div class="d-mini-viz">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="hm_t_warm" cx="50%" cy="48%" r="42%">
+                  <stop offset="0%"   stop-color="#fbbf24" stop-opacity="0.9"/>
+                  <stop offset="40%"  stop-color="#f97316" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="hm_t_hot" cx="58%" cy="56%" r="20%">
+                  <stop offset="0%"   stop-color="#ef4444" stop-opacity="1"/>
+                  <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="hm_t_cool" cx="50%" cy="48%" r="50%">
+                  <stop offset="0%"   stop-color="#1d4ed8" stop-opacity="0"/>
+                  <stop offset="70%"  stop-color="#1d4ed8" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#0a0a2e" stop-opacity="0.7"/>
+                </radialGradient>
+                <!-- torso clip -->
+                <clipPath id="hm_t_clip">
+                  <path d="M 28,10 Q 35,7 40,10 Q 50,14 56,26 Q 62,38 60,55 Q 57,67 40,69 Q 23,67 20,55 Q 18,38 24,26 Q 30,14 28,10 Z"/>
+                </clipPath>
+              </defs>
+              <rect width="80" height="80" fill="#020d1f"/>
+              <!-- body silhouette -->
+              <path d="M 28,10 Q 35,7 40,10 Q 50,14 56,26 Q 62,38 60,55 Q 57,67 40,69 Q 23,67 20,55 Q 18,38 24,26 Q 30,14 28,10 Z"
+                fill="#0a1828" stroke="#1A5CB8" stroke-width="1"/>
+              <!-- heat layers inside body -->
+              <g clip-path="url(#hm_t_clip)">
+                <rect width="80" height="80" fill="url(#hm_t_cool)"/>
+                <rect width="80" height="80" fill="url(#hm_t_warm)">
+                  <animate attributeName="opacity" values="0.6;1;0.6" dur="2.4s" repeatCount="indefinite"/>
+                </rect>
+                <rect width="80" height="80" fill="url(#hm_t_hot)">
+                  <animate attributeName="opacity" values="0.5;1;0.5" dur="1.6s" repeatCount="indefinite"/>
+                </rect>
+              </g>
+              <!-- anomaly pulse rings -->
+              <circle cx="46" cy="45" r="5" fill="none" stroke="#ef4444" stroke-width="1.2">
+                <animate attributeName="r" values="5;11;5" dur="1.8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0;1" dur="1.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="46" cy="45" r="3" fill="#ef4444" opacity="0.8">
+                <animate attributeName="opacity" values="0.5;1;0.5" dur="0.9s" repeatCount="indefinite"/>
+              </circle>
+              <!-- scan sweep line -->
+              <rect x="20" y="0" width="40" height="1.2" fill="rgba(251,191,36,0.8)"
+                clip-path="url(#hm_t_clip)"
+                style="animation: hmScan 3.2s ease-in-out infinite 0.4s;"/>
+              <!-- labels -->
+              <text x="4"  y="9"  font-size="4.5" fill="#fbbf24" font-family="monospace" opacity="0.8">DITI</text>
+              <text x="46" y="9"  font-size="4.5" fill="#ef4444" font-family="monospace" opacity="0.8">ALERT</text>
+              <text x="4"  y="77" font-size="4" fill="#5A7099" font-family="monospace">37.4°C</text>
+            </svg>
+          </div>
+          <div class="name">열화상 분석</div>
           <div class="desc">혈류·온도 패턴</div>
         </div>
+
+        <!-- EEG mini viz -->
         <div class="d-node eeg">
-          <div class="icon">🧠</div>
-          <div class="name">뇌파</div>
+          <div class="d-mini-viz">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="hm_e_head" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#0a2040"/>
+                  <stop offset="100%" stop-color="#020d1f"/>
+                </radialGradient>
+                <radialGradient id="hm_e_glow" cx="50%" cy="30%" r="40%">
+                  <stop offset="0%" stop-color="#3B8FD4" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#3B8FD4" stop-opacity="0"/>
+                </radialGradient>
+                <clipPath id="hm_e_clip"><ellipse cx="40" cy="36" rx="28" ry="30"/></clipPath>
+                <clipPath id="hm_e_wave_clip"><rect x="4" y="56" width="72" height="18"/></clipPath>
+              </defs>
+              <rect width="80" height="80" fill="#020d1f"/>
+              <!-- head silhouette -->
+              <ellipse cx="40" cy="36" rx="28" ry="30" fill="url(#hm_e_head)" stroke="#1A5CB8" stroke-width="1"/>
+              <!-- ear bumps -->
+              <path d="M 12,32 Q 8,37 12,42" fill="none" stroke="#1A5CB8" stroke-width="1"/>
+              <path d="M 68,32 Q 72,37 68,42" fill="none" stroke="#1A5CB8" stroke-width="1"/>
+              <!-- nose -->
+              <path d="M 36,10 Q 40,7 44,10" fill="none" stroke="#3B8FD4" stroke-width="0.8" stroke-dasharray="2,1.5"/>
+              <!-- frontal glow -->
+              <g clip-path="url(#hm_e_clip)">
+                <rect x="12" y="6" width="56" height="60" fill="url(#hm_e_glow)">
+                  <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                </rect>
+              </g>
+              <!-- F3 electrode -->
+              <circle cx="29" cy="27" r="4.5" fill="#020d1f" stroke="#3B8FD4" stroke-width="1.5">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" begin="0s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="29" cy="27" r="1.5" fill="#3B8FD4">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="0s" repeatCount="indefinite"/>
+              </circle>
+              <!-- Fz electrode -->
+              <circle cx="40" cy="24" r="5" fill="#020d1f" stroke="#22d3ee" stroke-width="2">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="1.7s" begin="0.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="40" cy="24" r="2" fill="#22d3ee">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.7s" begin="0.4s" repeatCount="indefinite"/>
+              </circle>
+              <!-- F4 electrode -->
+              <circle cx="51" cy="27" r="4.5" fill="#020d1f" stroke="#3B8FD4" stroke-width="1.5">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2.3s" begin="0.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="51" cy="27" r="1.5" fill="#3B8FD4">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="2.3s" begin="0.8s" repeatCount="indefinite"/>
+              </circle>
+              <!-- connection line -->
+              <line x1="29" y1="27" x2="51" y2="27" stroke="#1A5CB8" stroke-width="0.6" stroke-dasharray="3,2" opacity="0.6"/>
+              <!-- label -->
+              <text x="40" y="48" text-anchor="middle" font-size="4.5" fill="#3B8FD4" font-family="monospace" opacity="0.7">F3 · Fz · F4</text>
+              <!-- EEG waveform at bottom -->
+              <line x1="4" y1="57" x2="76" y2="57" stroke="#0a2040" stroke-width="0.5"/>
+              <g clip-path="url(#hm_e_wave_clip)">
+                <path stroke="#4ade80" stroke-width="1.2" fill="none"
+                  style="animation: hmWave 1.2s linear infinite;">
+                  <animate attributeName="d"
+                    values="M -80,65 C -70,57 -60,73 -50,65 C -40,57 -30,73 -20,65 C -10,57 0,73 10,65 C 20,57 30,73 40,65 C 50,57 60,73 70,65 C 80,57 90,73 100,65 C 110,57 120,73 130,65 C 140,57 150,73 160,65;
+                           M -80,65 C -72,57 -62,73 -52,65 C -42,57 -32,73 -22,65 C -12,57 -2,73 8,65 C 18,57 28,73 38,65 C 48,57 58,73 68,65 C 78,57 88,73 98,65 C 108,57 118,73 128,65 C 138,57 148,73 158,65"
+                    dur="1.2s" repeatCount="indefinite"/>
+                </path>
+                <path stroke="#60a5fa" stroke-width="0.9" fill="none" opacity="0.7">
+                  <animate attributeName="d"
+                    values="M -80,70 C -65,63 -55,77 -40,70 C -25,63 -15,77 0,70 C 15,63 25,77 40,70 C 55,63 65,77 80,70 C 95,63 105,77 120,70 C 135,63 145,77 160,70;
+                           M -80,70 C -67,63 -57,77 -42,70 C -27,63 -17,77 -2,70 C 13,63 23,77 38,70 C 53,63 63,77 78,70 C 93,63 103,77 118,70 C 133,63 143,77 158,70"
+                    dur="0.5s" repeatCount="indefinite"/>
+                </path>
+              </g>
+              <!-- readout labels -->
+              <text x="4"  y="9"  font-size="4.5" fill="#a78bfa" font-family="monospace" opacity="0.8">EEG</text>
+              <text x="48" y="9"  font-size="4.5" fill="#22d3ee" font-family="monospace" opacity="0.8">LIVE</text>
+              <text x="4"  y="77" font-size="4" fill="#5A7099" font-family="monospace">256Hz</text>
+            </svg>
+          </div>
+          <div class="name">뇌파 분석</div>
           <div class="desc">호르몬·자율신경</div>
         </div>
       </div>
