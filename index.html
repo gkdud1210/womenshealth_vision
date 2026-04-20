@@ -306,6 +306,54 @@
       display: flex; align-items: center; justify-content: center;
       margin-bottom: 24px; font-size: 28px;
     }
+    /* ─── IRIS 3D VISUALIZATION ─── */
+    .iris-viz {
+      width: 100%; aspect-ratio: 1;
+      max-width: 260px;
+      margin: 0 auto 28px;
+      position: relative;
+      background: #020d1f;
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+    }
+    .iris-viz svg { display: block; width: 100%; height: 100%; }
+    .iris-scan-line {
+      position: absolute; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(59,143,212,0.8), transparent);
+      animation: iris-scan 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes iris-scan {
+      0%   { top: 10%; opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { top: 90%; opacity: 0; }
+    }
+    .iris-corner {
+      position: absolute; width: 12px; height: 12px;
+      border-color: var(--sky); border-style: solid; opacity: 0.7;
+    }
+    .iris-corner.tl { top: 8px; left: 8px;  border-width: 2px 0 0 2px; }
+    .iris-corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+    .iris-corner.bl { bottom: 8px; left: 8px;  border-width: 0 0 2px 2px; }
+    .iris-corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+    .iris-data-row {
+      display: flex; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .iris-data-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .iris-data-chip .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .iris-data-chip.active { color: var(--navy); }
+    .iris-data-chip.active .dot { background: var(--sky); }
+    .iris-data-chip .dot.warn { background: #F59E0B; }
+    .iris-data-chip .dot.ok   { background: #22C55E; }
     .tech-name {
       font-size: 20px; font-weight: 800; color: var(--navy);
       margin-bottom: 8px; letter-spacing: -0.01em;
@@ -761,7 +809,189 @@
   <div class="tech-grid">
     <div class="tech-card iris reveal">
       <div class="tech-tag">Iridology AI</div>
-      <div class="tech-icon">👁</div>
+
+      <!-- 홍채 3D 시각화 -->
+      <div class="iris-viz">
+        <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- 홍채 깊이 컬러맵 (네이비→스카이→라이트) -->
+            <radialGradient id="irisDepth" cx="50%" cy="48%" r="50%">
+              <stop offset="0%"   stop-color="#020d1f"/>
+              <stop offset="18%"  stop-color="#020d1f"/>
+              <stop offset="19%"  stop-color="#0a1f3f"/>
+              <stop offset="32%"  stop-color="#0D2B6E" stop-opacity="0.9"/>
+              <stop offset="50%"  stop-color="#1A5CB8" stop-opacity="0.85"/>
+              <stop offset="68%"  stop-color="#3B8FD4" stop-opacity="0.8"/>
+              <stop offset="82%"  stop-color="#5BAEE8" stop-opacity="0.7"/>
+              <stop offset="92%"  stop-color="#8ECEF5" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#020d1f" stop-opacity="0"/>
+            </radialGradient>
+            <!-- 3D 입체감 하이라이트 -->
+            <radialGradient id="irisHighlight" cx="38%" cy="35%" r="40%">
+              <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+            <!-- 구역별 이상 표시 그라디언트 -->
+            <radialGradient id="anomaly1" cx="60%" cy="42%" r="12%">
+              <stop offset="0%"  stop-color="#F59E0B" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="anomaly2" cx="36%" cy="62%" r="9%">
+              <stop offset="0%"  stop-color="#0EA5E9" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- 배경 -->
+          <rect width="260" height="260" fill="#020d1f"/>
+
+          <!-- 배경 그리드 -->
+          <g stroke="#0D2B6E" stroke-width="0.4" opacity="0.5">
+            <line x1="0" y1="65"  x2="260" y2="65"/>
+            <line x1="0" y1="130" x2="260" y2="130"/>
+            <line x1="0" y1="195" x2="260" y2="195"/>
+            <line x1="65"  y1="0" x2="65"  y2="260"/>
+            <line x1="130" y1="0" x2="130" y2="260"/>
+            <line x1="195" y1="0" x2="195" y2="260"/>
+          </g>
+
+          <!-- 외부 공막(흰자) -->
+          <circle cx="130" cy="130" r="112" fill="#f8f9ff" opacity="0.06"/>
+
+          <!-- 홍채 기본 베이스 -->
+          <circle cx="130" cy="130" r="96" fill="#0a1428"/>
+
+          <!-- 섬유 조직(Trabeculae) — 방사형 선들 -->
+          <g stroke-width="0.7" opacity="0.6" filter="url(#glow)">
+            <!-- 주요 섬유 (더 밝고 두꺼운) -->
+            <g stroke="#1A5CB8" stroke-width="1.1" opacity="0.75">
+              <line x1="130" y1="130" x2="226" y2="105"/>
+              <line x1="130" y1="130" x2="34"  y2="105"/>
+              <line x1="130" y1="130" x2="130" y2="34"/>
+              <line x1="130" y1="130" x2="130" y2="226"/>
+              <line x1="130" y1="130" x2="218" y2="178"/>
+              <line x1="130" y1="130" x2="42"  y2="178"/>
+              <line x1="130" y1="130" x2="218" y2="82"/>
+              <line x1="130" y1="130" x2="42"  y2="82"/>
+            </g>
+            <!-- 보조 섬유 (가늘고 많은) -->
+            <g stroke="#3B8FD4" stroke-width="0.6" opacity="0.5">
+              <line x1="130" y1="130" x2="222" y2="118"/>
+              <line x1="130" y1="130" x2="222" y2="142"/>
+              <line x1="130" y1="130" x2="38"  y2="118"/>
+              <line x1="130" y1="130" x2="38"  y2="142"/>
+              <line x1="130" y1="130" x2="142" y2="34"/>
+              <line x1="130" y1="130" x2="118" y2="34"/>
+              <line x1="130" y1="130" x2="142" y2="226"/>
+              <line x1="130" y1="130" x2="118" y2="226"/>
+              <line x1="130" y1="130" x2="207" y2="163"/>
+              <line x1="130" y1="130" x2="207" y2="97"/>
+              <line x1="130" y1="130" x2="53"  y2="163"/>
+              <line x1="130" y1="130" x2="53"  y2="97"/>
+              <!-- 추가 섬유 -->
+              <line x1="130" y1="130" x2="215" y2="155"/>
+              <line x1="130" y1="130" x2="215" y2="110"/>
+              <line x1="130" y1="130" x2="45"  y2="155"/>
+              <line x1="130" y1="130" x2="45"  y2="110"/>
+              <line x1="130" y1="130" x2="155" y2="220"/>
+              <line x1="130" y1="130" x2="105" y2="220"/>
+              <line x1="130" y1="130" x2="155" y2="40"/>
+              <line x1="130" y1="130" x2="105" y2="40"/>
+            </g>
+          </g>
+
+          <!-- 동심원 (구역 경계) -->
+          <g fill="none" stroke="#1A5CB8" stroke-dasharray="4,3">
+            <circle cx="130" cy="130" r="32"  stroke-width="0.8" opacity="0.5"/>
+            <circle cx="130" cy="130" r="52"  stroke-width="0.7" opacity="0.45"/>
+            <circle cx="130" cy="130" r="70"  stroke-width="0.7" opacity="0.4"/>
+            <circle cx="130" cy="130" r="84"  stroke-width="0.7" opacity="0.35"/>
+          </g>
+          <circle cx="130" cy="130" r="96" fill="none" stroke="#3B8FD4" stroke-width="1.2" opacity="0.5"/>
+
+          <!-- 깊이 컬러맵 오버레이 -->
+          <circle cx="130" cy="130" r="96" fill="url(#irisDepth)"/>
+
+          <!-- 이상 구역 하이라이트 -->
+          <circle cx="130" cy="130" r="96" fill="url(#anomaly1)"/>
+          <circle cx="130" cy="130" r="96" fill="url(#anomaly2)"/>
+
+          <!-- 3D 하이라이트 -->
+          <circle cx="130" cy="130" r="96" fill="url(#irisHighlight)"/>
+
+          <!-- 동공 -->
+          <circle cx="130" cy="130" r="28" fill="#010810"/>
+          <circle cx="130" cy="130" r="28" fill="none" stroke="#0D2B6E" stroke-width="1.5" opacity="0.8"/>
+          <!-- 동공 반사광 -->
+          <ellipse cx="120" cy="121" rx="5" ry="3.5" fill="white" opacity="0.18" transform="rotate(-20,120,121)"/>
+
+          <!-- 분석 구역 레이블 -->
+          <!-- 자궁 투영 구역 마커 (우측) -->
+          <g filter="url(#glow)">
+            <circle cx="185" cy="118" r="5" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.9"/>
+            <line x1="190" y1="114" x2="204" y2="106" stroke="#F59E0B" stroke-width="1" opacity="0.8"/>
+            <rect x="204" y="99" width="44" height="14" fill="#020d1f" fill-opacity="0.85"/>
+            <text x="207" y="109" font-family="monospace" font-size="8" fill="#F59E0B" font-weight="700">자궁 투영</text>
+          </g>
+
+          <!-- 난소 투영 구역 마커 (좌측 하단) -->
+          <g filter="url(#glow)">
+            <circle cx="88" cy="162" r="4.5" fill="none" stroke="#0EA5E9" stroke-width="1.5" opacity="0.9"/>
+            <line x1="84"  y1="165" x2="68" y2="175" stroke="#0EA5E9" stroke-width="1" opacity="0.8"/>
+            <rect x="12" y="169" width="56" height="14" fill="#020d1f" fill-opacity="0.85"/>
+            <text x="15" y="179" font-family="monospace" font-size="8" fill="#0EA5E9" font-weight="700">난소 투영</text>
+          </g>
+
+          <!-- 십자 조준선 -->
+          <g stroke="#3B8FD4" stroke-width="0.8" opacity="0.45">
+            <line x1="130" y1="34"  x2="130" y2="226"/>
+            <line x1="34"  y1="130" x2="226" y2="130"/>
+          </g>
+
+          <!-- 외부 측정 눈금 -->
+          <g stroke="#3B8FD4" stroke-width="0.8" opacity="0.5">
+            <line x1="130" y1="22" x2="130" y2="30"/>
+            <line x1="130" y1="230" x2="130" y2="238"/>
+            <line x1="22"  y1="130" x2="30"  y2="130"/>
+            <line x1="230" y1="130" x2="238" y2="130"/>
+            <!-- 45도 눈금 -->
+            <line x1="62"  y1="62"  x2="68"  y2="68"/>
+            <line x1="198" y1="62"  x2="192" y2="68"/>
+            <line x1="62"  y1="198" x2="68"  y2="192"/>
+            <line x1="198" y1="198" x2="192" y2="192"/>
+          </g>
+
+          <!-- 좌측 상단 데이터 오버레이 -->
+          <rect x="8" y="8" width="72" height="42" fill="#020d1f" fill-opacity="0.85" rx="1"/>
+          <text x="12" y="19" font-family="monospace" font-size="7.5" fill="#3B8FD4" font-weight="700">IRIS-3D SCAN</text>
+          <text x="12" y="30" font-family="monospace" font-size="7" fill="#5A7099">DEPTH: 0.3μm</text>
+          <text x="12" y="41" font-family="monospace" font-size="7" fill="#5A7099">RES: 4096×4096</text>
+
+          <!-- 우측 하단 데이터 -->
+          <rect x="172" y="216" width="80" height="36" fill="#020d1f" fill-opacity="0.85" rx="1"/>
+          <text x="176" y="228" font-family="monospace" font-size="7" fill="#3B8FD4">ZONE: UTERINE</text>
+          <text x="176" y="238" font-family="monospace" font-size="7" fill="#F59E0B">ANOMALY: +0.4</text>
+          <text x="176" y="248" font-family="monospace" font-size="7" fill="#5A7099">CONF: 94.2%</text>
+        </svg>
+        <!-- 스캔 라인 애니메이션 -->
+        <div class="iris-scan-line"></div>
+        <!-- 코너 브라켓 -->
+        <div class="iris-corner tl"></div>
+        <div class="iris-corner tr"></div>
+        <div class="iris-corner bl"></div>
+        <div class="iris-corner br"></div>
+      </div>
+      <!-- 하단 데이터 칩 -->
+      <div class="iris-data-row">
+        <div class="iris-data-chip active"><div class="dot ok"></div>정상 구역</div>
+        <div class="iris-data-chip active"><div class="dot warn"></div>자궁 투영 이상</div>
+        <div class="iris-data-chip active"><div class="dot" style="background:var(--sky)"></div>난소 모니터링</div>
+      </div>
+
       <div class="tech-name">홍채 3D 정밀 분석</div>
       <div class="tech-subtitle">Iris Fiber Mapping</div>
       <p class="tech-desc">홍채 섬유 조직(Trabeculae)의 굴곡과 밀도를 3D 입체 데이터로 변환. 자궁·난소 투영 부위의 조직 손상도, 독소 침착 정도를 수치화합니다.</p>
