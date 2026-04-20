@@ -77,14 +77,14 @@
     /* ─── HERO ─── */
     #hero {
       margin-top: 64px;
-      padding: 80px 48px 0;
+      padding: 0 48px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       min-height: calc(100vh - 64px);
       border-bottom: var(--grid);
     }
     .hero-left {
-      padding: 64px 64px 64px 0;
+      padding: 72px 64px 72px 0;
       border-right: var(--grid);
       display: flex; flex-direction: column; justify-content: center;
     }
@@ -222,10 +222,9 @@
     /* ─── SECTION COMMON ─── */
     section { border-bottom: var(--grid); }
     .section-header {
-      padding: 48px 48px 0;
+      padding: 48px 48px 32px;
       border-bottom: var(--grid);
       display: flex; align-items: flex-end; justify-content: space-between;
-      padding-bottom: 32px;
     }
     .section-label {
       font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
@@ -273,9 +272,9 @@
       content: '—'; color: var(--sky); font-weight: 700; flex-shrink: 0;
     }
     .lc-index {
-      position: absolute; top: 32px; right: 32px;
+      position: absolute; bottom: 20px; right: 24px;
       font-size: 48px; font-weight: 900; color: var(--light);
-      line-height: 1;
+      line-height: 1; pointer-events: none; user-select: none;
     }
 
     /* ─── TECHNOLOGY ─── */
@@ -525,12 +524,12 @@
       display: flex; flex-direction: column; gap: 16px; margin-top: 24px;
     }
     .impact-row {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: flex-start; gap: 16px;
       padding: 16px 20px; border: 1.5px solid var(--border);
     }
-    .impact-icon { font-size: 24px; }
-    .impact-val { font-size: 22px; font-weight: 900; color: var(--navy); }
-    .impact-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .impact-icon { font-size: 22px; margin-top: 2px; flex-shrink: 0; }
+    .impact-val { font-size: 18px; font-weight: 900; color: var(--navy); line-height: 1.3; }
+    .impact-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
     /* ─── CTA ─── */
     #cta {
@@ -598,7 +597,7 @@
       .nav-links { display: none; }
       #hero { grid-template-columns: 1fr; }
       .hero-right { display: none; }
-      .hero-left { padding: 40px 0; border-right: none; }
+      .hero-left { padding: 56px 0 48px; border-right: none; }
       #lifecycle .lifecycle-grid { grid-template-columns: 1fr 1fr; }
       .lc-card:nth-child(2) { border-right: none; }
       .lc-card:nth-child(3) { border-top: var(--grid); }
@@ -614,8 +613,8 @@
       #business .biz-inner { grid-template-columns: 1fr; }
       .biz-left { border-right: none; padding-right: 0; padding-bottom: 32px; border-bottom: var(--grid); }
       .biz-right { padding-left: 0; padding-top: 32px; }
-      .section-header { padding: 32px 20px; }
-      #hero { padding: 40px 20px 0; }
+      .section-header { padding: 32px 20px 24px; }
+      #hero { padding: 0 20px; }
       #lifecycle .lifecycle-grid .lc-card { padding: 28px 20px; }
       #technology .tech-grid .tech-card { padding: 32px 24px; }
       #dashboard .dash-inner,
