@@ -363,6 +363,24 @@
     @keyframes pH1 { 0%,29%,100%{color:#3B8FD4;border-color:#3B8FD4} 37%,93%{color:#5A7099;border-color:#0D2B6E} }
     @keyframes pH2 { 0%,30%,70%,100%{color:#5A7099;border-color:#0D2B6E} 37%,62%{color:#3B8FD4;border-color:#3B8FD4} }
     @keyframes pH3 { 0%,62%,100%{color:#5A7099;border-color:#0D2B6E} 70%,93%{color:#3B8FD4;border-color:#3B8FD4} }
+    /* ─── THERMAL visualization ─── */
+    .thermal-scan-line {
+      position: absolute; left: 15%; right: 15%; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(251,191,36,0.9), transparent);
+      animation: iris-scan 2.2s ease-in-out infinite;
+      pointer-events: none; z-index: 5;
+    }
+    .th-pulse {
+      position: absolute; border-radius: 50%;
+      top: 57%; left: 65%; transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 5;
+    }
+    .th-pulse.p1 { width:48px; height:48px; border:2px solid #ef4444; animation: thPulse 1.5s ease-out infinite; }
+    .th-pulse.p2 { width:28px; height:28px; border:1.5px solid #f97316; animation: thPulse 1.5s ease-out infinite 0.5s; }
+    @keyframes thPulse {
+      0%   { transform:translate(-50%,-50%) scale(0.7); opacity:1; }
+      100% { transform:translate(-50%,-50%) scale(2.4); opacity:0; }
+    }
     .iris-data-row {
       display: flex; justify-content: space-between;
       margin-bottom: 6px;
@@ -1297,7 +1315,274 @@
     </div>
     <div class="tech-card thermal reveal">
       <div class="tech-tag">DITI Analysis</div>
-      <div class="tech-icon">🌡</div>
+
+      <!-- 열화상 멀티페이즈 시각화 -->
+      <div class="iris-viz">
+
+        <!-- ── Frame 1: DITI Scanning ── -->
+        <div class="iris-frame f1">
+        <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="th_f1_clip">
+              <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="260" height="260" fill="#020d1f"/>
+          <g stroke="#0a1f44" stroke-width="0.5" opacity="0.5">
+            <line x1="0" y1="65"  x2="260" y2="65"/><line x1="0" y1="130" x2="260" y2="130"/>
+            <line x1="0" y1="195" x2="260" y2="195"/><line x1="65"  y1="0" x2="65"  y2="260"/>
+            <line x1="130" y1="0" x2="130" y2="260"/><line x1="195" y1="0" x2="195" y2="260"/>
+          </g>
+          <!-- Abdomen body fill + zone grid -->
+          <g clip-path="url(#th_f1_clip)">
+            <rect x="0" y="0" width="260" height="260" fill="#06111e"/>
+            <!-- Scan zone grid -->
+            <g stroke="#1A5CB8" stroke-width="0.6" opacity="0.3">
+              <line x1="48" y1="70"  x2="212" y2="70"/>
+              <line x1="48" y1="103" x2="212" y2="103"/>
+              <line x1="48" y1="137" x2="212" y2="137"/>
+              <line x1="48" y1="170" x2="212" y2="170"/>
+              <line x1="90"  y1="22" x2="90"  y2="218"/>
+              <line x1="130" y1="22" x2="130" y2="218"/>
+              <line x1="170" y1="22" x2="170" y2="218"/>
+            </g>
+            <!-- Upper zones already scanned (faint glow) -->
+            <rect x="48" y="22" width="164" height="108" fill="#1A5CB8" opacity="0.06"/>
+          </g>
+          <!-- Abdomen outline (dashed — scanning mode) -->
+          <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"
+                fill="none" stroke="#3B8FD4" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.8"/>
+          <!-- Navel marker -->
+          <circle cx="130" cy="82" r="4.5" fill="none" stroke="#3B8FD4" stroke-width="1.2" opacity="0.7"/>
+          <rect x="136" y="76" width="22" height="10" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="138" y="83" font-family="monospace" font-size="7" fill="#5A7099">배꼽</text>
+          <!-- Uterus zone -->
+          <rect x="106" y="120" width="48" height="36" fill="none" stroke="#3B8FD4" stroke-width="0.9" stroke-dasharray="3,2" opacity="0.65"/>
+          <text x="109" y="117" font-family="monospace" font-size="6.5" fill="#3B8FD4">자궁</text>
+          <!-- Right ovary -->
+          <circle cx="168" cy="157" r="13" fill="none" stroke="#3B8FD4" stroke-width="0.9" stroke-dasharray="3,2" opacity="0.65"/>
+          <text x="158" y="178" font-family="monospace" font-size="6" fill="#3B8FD4">우 난소</text>
+          <!-- Left ovary -->
+          <circle cx="92" cy="157" r="13" fill="none" stroke="#3B8FD4" stroke-width="0.9" stroke-dasharray="3,2" opacity="0.65"/>
+          <text x="80" y="178" font-family="monospace" font-size="6" fill="#3B8FD4">좌 난소</text>
+          <!-- Fallopian tubes -->
+          <path d="M 154,130 Q 162,144 168,144" fill="none" stroke="#3B8FD4" stroke-width="0.9" opacity="0.5"/>
+          <path d="M 106,130 Q 98,144 92,144" fill="none" stroke="#3B8FD4" stroke-width="0.9" opacity="0.5"/>
+          <!-- Camera targeting crosshair -->
+          <g stroke="#F59E0B" stroke-width="1.1" opacity="0.85">
+            <line x1="122" y1="100" x2="138" y2="100"/><line x1="130" y1="92" x2="130" y2="108"/>
+            <rect x="119" y="96" width="22" height="8" fill="none" stroke-width="0.8" stroke-dasharray="2,1"/>
+          </g>
+          <!-- Top bar -->
+          <rect x="0" y="0" width="260" height="19" fill="#0a1428"/>
+          <text x="12" y="13" font-family="monospace" font-size="7.5" fill="#F59E0B" font-weight="700">◉ DITI 스캔 진행중...</text>
+          <text x="208" y="13" font-family="monospace" font-size="7" fill="#5A7099">65%</text>
+          <!-- Bottom bar + progress -->
+          <rect x="0" y="238" width="260" height="22" fill="#0a1428"/>
+          <rect x="0" y="238" width="169" height="22" fill="#F59E0B" opacity="0.12"/>
+          <line x1="0" y1="238" x2="260" y2="238" stroke="#0D2B6E" stroke-width="1"/>
+          <text x="12" y="251" font-family="monospace" font-size="6.5" fill="#5A7099">ZONES: 9/14  |  RANGE: 32–39°C  |  640×480px</text>
+        </svg>
+        <div class="thermal-scan-line"></div>
+        </div><!-- /f1 -->
+
+        <!-- ── Frame 2: Full Thermal Map (Normal) ── -->
+        <div class="iris-frame f2">
+        <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="th_f2_scale" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%"   stop-color="#0D2B6E"/>
+              <stop offset="28%"  stop-color="#0ea5e9"/>
+              <stop offset="55%"  stop-color="#10b981"/>
+              <stop offset="75%"  stop-color="#eab308"/>
+              <stop offset="90%"  stop-color="#f97316"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+            <radialGradient id="th_f2_base" cx="50%" cy="47%" r="52%">
+              <stop offset="0%"   stop-color="#0ea5e9" stop-opacity="0.65"/>
+              <stop offset="45%"  stop-color="#1A5CB8" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#0D2B6E" stop-opacity="0.85"/>
+            </radialGradient>
+            <radialGradient id="th_f2_uterus" cx="50%" cy="57%" r="26%">
+              <stop offset="0%"   stop-color="#10b981" stop-opacity="0.7"/>
+              <stop offset="45%"  stop-color="#22c55e" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="th_f2_vessel" cx="50%" cy="50%" r="12%">
+              <stop offset="0%"   stop-color="#eab308" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+            </radialGradient>
+            <clipPath id="th_f2_clip">
+              <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="260" height="260" fill="#020d1f"/>
+          <g stroke="#0a1f44" stroke-width="0.5" opacity="0.5">
+            <line x1="0" y1="65"  x2="260" y2="65"/><line x1="0" y1="130" x2="260" y2="130"/>
+            <line x1="0" y1="195" x2="260" y2="195"/><line x1="65"  y1="0" x2="65"  y2="260"/>
+            <line x1="130" y1="0" x2="130" y2="260"/><line x1="195" y1="0" x2="195" y2="260"/>
+          </g>
+          <!-- Thermal fill layers inside abdomen clip -->
+          <g clip-path="url(#th_f2_clip)">
+            <rect x="0" y="0" width="260" height="260" fill="#071830"/>
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f2_base)"/>
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f2_uterus)"/>
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f2_vessel)"/>
+            <!-- Hip warmth zones -->
+            <circle cx="190" cy="118" r="36" fill="#0ea5e9" opacity="0.12"/>
+            <circle cx="70"  cy="118" r="36" fill="#0ea5e9" opacity="0.12"/>
+            <!-- Right ovary normal -->
+            <circle cx="168" cy="157" r="22" fill="#10b981" opacity="0.2"/>
+            <!-- Left ovary normal -->
+            <circle cx="92"  cy="157" r="22" fill="#22c55e" opacity="0.18"/>
+          </g>
+          <!-- Abdomen outline -->
+          <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"
+                fill="none" stroke="#3B8FD4" stroke-width="0.9" opacity="0.4"/>
+          <!-- Anatomical outlines (subtle) -->
+          <ellipse cx="130" cy="138" rx="24" ry="20" fill="none" stroke="#10b981" stroke-width="0.7" stroke-dasharray="3,2" opacity="0.5"/>
+          <circle cx="168" cy="157" r="11" fill="none" stroke="#10b981" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.5"/>
+          <circle cx="92"  cy="157" r="11" fill="none" stroke="#10b981" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.5"/>
+          <!-- Temperature labels -->
+          <rect x="110" y="132" width="40" height="11" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="112" y="141" font-family="monospace" font-size="7.5" fill="#10b981" font-weight="700">36.8°C</text>
+          <rect x="156" y="163" width="30" height="10" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="158" y="171" font-family="monospace" font-size="6.5" fill="#22c55e">36.5°C</text>
+          <rect x="74"  y="163" width="30" height="10" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="76"  y="171" font-family="monospace" font-size="6.5" fill="#22c55e">36.4°C</text>
+          <!-- Temperature scale bar -->
+          <rect x="233" y="34" width="11" height="152" fill="url(#th_f2_scale)" stroke="#0D2B6E" stroke-width="0.5"/>
+          <text x="230" y="38"  font-family="monospace" font-size="5.5" fill="#ef4444"  text-anchor="end">39°C</text>
+          <text x="230" y="76"  font-family="monospace" font-size="5.5" fill="#f97316"  text-anchor="end">38°C</text>
+          <text x="230" y="114" font-family="monospace" font-size="5.5" fill="#eab308"  text-anchor="end">37°C</text>
+          <text x="230" y="152" font-family="monospace" font-size="5.5" fill="#22c55e"  text-anchor="end">36°C</text>
+          <text x="230" y="190" font-family="monospace" font-size="5.5" fill="#0ea5e9"  text-anchor="end">35°C</text>
+          <!-- Top bar -->
+          <rect x="0" y="0" width="260" height="19" fill="#0a1428"/>
+          <text x="12" y="13" font-family="monospace" font-size="7.5" fill="#10b981" font-weight="700">◈ THERMAL MAP — NORMAL</text>
+          <!-- Bottom bar -->
+          <rect x="0" y="228" width="260" height="32" fill="#0a1428"/>
+          <text x="12" y="241" font-family="monospace" font-size="7" fill="#10b981">MEAN TEMP: 36.8°C ± 0.3°C</text>
+          <text x="12" y="253" font-family="monospace" font-size="6.5" fill="#5A7099">ASYMMETRY: 0.12  |  STATUS: NORMAL ✓</text>
+        </svg>
+        </div><!-- /f2 -->
+
+        <!-- ── Frame 3: Anomaly Detected ── -->
+        <div class="iris-frame f3">
+        <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="th_f3_scale" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%"   stop-color="#0D2B6E"/>
+              <stop offset="28%"  stop-color="#0ea5e9"/>
+              <stop offset="55%"  stop-color="#10b981"/>
+              <stop offset="75%"  stop-color="#eab308"/>
+              <stop offset="90%"  stop-color="#f97316"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+            <radialGradient id="th_f3_base" cx="50%" cy="47%" r="52%">
+              <stop offset="0%"   stop-color="#0ea5e9" stop-opacity="0.65"/>
+              <stop offset="45%"  stop-color="#1A5CB8" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#0D2B6E" stop-opacity="0.85"/>
+            </radialGradient>
+            <radialGradient id="th_f3_uterus" cx="50%" cy="57%" r="26%">
+              <stop offset="0%"   stop-color="#10b981" stop-opacity="0.65"/>
+              <stop offset="45%"  stop-color="#22c55e" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+            </radialGradient>
+            <!-- Anomaly hot spot — right uterine/ovarian junction -->
+            <radialGradient id="th_f3_anom" cx="65%" cy="58%" r="16%">
+              <stop offset="0%"   stop-color="#ef4444" stop-opacity="0.95"/>
+              <stop offset="25%"  stop-color="#f97316" stop-opacity="0.75"/>
+              <stop offset="60%"  stop-color="#eab308" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="th_glow">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="th_f3_clip">
+              <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="260" height="260" fill="#020d1f"/>
+          <g stroke="#0a1f44" stroke-width="0.5" opacity="0.5">
+            <line x1="0" y1="65"  x2="260" y2="65"/><line x1="0" y1="130" x2="260" y2="130"/>
+            <line x1="0" y1="195" x2="260" y2="195"/><line x1="65"  y1="0" x2="65"  y2="260"/>
+            <line x1="130" y1="0" x2="130" y2="260"/><line x1="195" y1="0" x2="195" y2="260"/>
+          </g>
+          <!-- Thermal fill (same base + anomaly overlay) -->
+          <g clip-path="url(#th_f3_clip)">
+            <rect x="0" y="0" width="260" height="260" fill="#071830"/>
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f3_base)"/>
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f3_uterus)"/>
+            <!-- Hip warmth -->
+            <circle cx="190" cy="118" r="36" fill="#0ea5e9" opacity="0.12"/>
+            <circle cx="70"  cy="118" r="36" fill="#0ea5e9" opacity="0.12"/>
+            <!-- Left ovary normal -->
+            <circle cx="92"  cy="157" r="22" fill="#22c55e" opacity="0.18"/>
+            <!-- Right ovary/uterine anomaly zone -->
+            <rect x="0" y="0" width="260" height="260" fill="url(#th_f3_anom)"/>
+            <!-- Extra hot core -->
+            <circle cx="168" cy="152" r="10" fill="#ef4444" opacity="0.55" filter="url(#th_glow)"/>
+            <circle cx="168" cy="152" r="5"  fill="#ffffff" opacity="0.2"/>
+          </g>
+          <!-- Abdomen outline -->
+          <path d="M 108,32 Q 130,22 152,32 Q 178,42 200,70 Q 215,98 212,137 Q 208,170 192,191 Q 168,216 130,218 Q 92,216 68,191 Q 52,170 48,137 Q 45,98 60,70 Q 82,42 108,32 Z"
+                fill="none" stroke="#3B8FD4" stroke-width="0.9" opacity="0.4"/>
+          <!-- Normal anatomical outlines -->
+          <ellipse cx="130" cy="138" rx="24" ry="20" fill="none" stroke="#10b981" stroke-width="0.7" stroke-dasharray="3,2" opacity="0.45"/>
+          <circle cx="92"  cy="157" r="11" fill="none" stroke="#22c55e" stroke-width="0.7" stroke-dasharray="2,2" opacity="0.5"/>
+          <!-- Anomaly target ring -->
+          <circle cx="168" cy="152" r="15" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.85" filter="url(#th_glow)"/>
+          <circle cx="168" cy="152" r="22" fill="none" stroke="#f97316" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.55"/>
+          <!-- Anomaly callout line + box -->
+          <line x1="183" y1="144" x2="203" y2="130" stroke="#ef4444" stroke-width="1" opacity="0.8"/>
+          <rect x="203" y="122" width="48" height="28" fill="#020d1f" fill-opacity="0.95" stroke="#ef4444" stroke-width="0.8"/>
+          <text x="206" y="132" font-family="monospace" font-size="6.5" fill="#ef4444" font-weight="700">⚠ 이상 감지</text>
+          <text x="206" y="143" font-family="monospace" font-size="6.5" fill="#F59E0B">38.2°C</text>
+          <!-- Normal temp labels -->
+          <rect x="110" y="132" width="40" height="11" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="112" y="141" font-family="monospace" font-size="7.5" fill="#10b981" font-weight="700">36.8°C</text>
+          <rect x="74"  y="163" width="30" height="10" fill="#020d1f" fill-opacity="0.85"/>
+          <text x="76"  y="171" font-family="monospace" font-size="6.5" fill="#22c55e">36.4°C</text>
+          <!-- Temperature scale bar -->
+          <rect x="233" y="34" width="11" height="152" fill="url(#th_f3_scale)" stroke="#0D2B6E" stroke-width="0.5"/>
+          <text x="230" y="38"  font-family="monospace" font-size="5.5" fill="#ef4444"  text-anchor="end">39°C</text>
+          <text x="230" y="76"  font-family="monospace" font-size="5.5" fill="#f97316"  text-anchor="end">38°C</text>
+          <text x="230" y="114" font-family="monospace" font-size="5.5" fill="#eab308"  text-anchor="end">37°C</text>
+          <text x="230" y="152" font-family="monospace" font-size="5.5" fill="#22c55e"  text-anchor="end">36°C</text>
+          <text x="230" y="190" font-family="monospace" font-size="5.5" fill="#0ea5e9"  text-anchor="end">35°C</text>
+          <!-- Top bar -->
+          <rect x="0" y="0" width="260" height="19" fill="#1a0808"/>
+          <text x="12" y="13" font-family="monospace" font-size="7.5" fill="#ef4444" font-weight="700">⚠ 국소 이상 발열 감지</text>
+          <!-- Bottom bar -->
+          <rect x="0" y="228" width="260" height="32" fill="#0a1428"/>
+          <text x="12" y="241" font-family="monospace" font-size="7" fill="#ef4444" font-weight="700">우측 자궁부속기 +1.4°C 편차 검출</text>
+          <text x="12" y="253" font-family="monospace" font-size="6.5" fill="#F59E0B">혹 또는 염증 의심 — 전문의 상담 권고</text>
+        </svg>
+        <!-- Pulsing anomaly indicator (CSS overlay) -->
+        <div class="th-pulse p1"></div>
+        <div class="th-pulse p2"></div>
+        </div><!-- /f3 -->
+
+        <!-- Phase indicator -->
+        <div class="iris-phase-bar">
+          <span class="iris-ph ph1">◉ SCANNING</span>
+          <span class="iris-ph ph2">◈ THERMAL MAP</span>
+          <span class="iris-ph ph3">⚠ ANOMALY</span>
+        </div>
+        <div class="iris-corner tl"></div>
+        <div class="iris-corner tr"></div>
+        <div class="iris-corner bl"></div>
+        <div class="iris-corner br"></div>
+      </div>
+      <!-- 하단 데이터 칩 -->
+      <div class="iris-data-row">
+        <div class="iris-data-chip active"><div class="dot ok"></div>정상 온도 분포</div>
+        <div class="iris-data-chip active"><div class="dot warn"></div>국소 발열 감지</div>
+        <div class="iris-data-chip active"><div class="dot" style="background:#ef4444"></div>이상 구역</div>
+      </div>
+
       <div class="tech-name">열화상 패턴 분석</div>
       <div class="tech-subtitle">Digital Infrared Thermal Imaging</div>
       <p class="tech-desc">하복부 온도 패턴을 실시간 분석하여 냉증(순환 저하) 또는 국소 발열(염증·혹)을 감지. 임산부 및 민감군에게도 100% 안전한 비침습 진단.</p>
